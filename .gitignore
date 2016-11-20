@@ -1,0 +1,3 @@
+roles/raspberry-basic/vars/overrides.yml
+roles/raspberry-basic/files/keys/*
+hosts

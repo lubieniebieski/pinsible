@@ -1,0 +1,7 @@
+---
+reports_email: "user@example.com"
+ssh_users:
+  - name: "john.doe.pub"
+    user: "john"
+  - name: "jane.doe.pub"
+    user: "jane"

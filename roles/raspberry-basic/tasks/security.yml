@@ -1,0 +1,62 @@
+---
+- name: "First things first - install latest patches"
+  apt: update_cache=yes upgrade=full
+
+- name: "Add SSH users"
+  user: name={{ item.user }} shell=/bin/bash groups=sudo,adm
+  with_items:
+    - "{{ ssh_users }}"
+
+- name: Allow 'sudo' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+
+- authorized_key: user="{{ item.user }}" key="{{ lookup('file', \'files/keys/{{ item.name }}\')  }}"
+  with_items:
+    - "{{ ssh_users }}"
+
+- name: "Enforce ssh key logins"
+  action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin without-password" state=present
+  notify: Restart ssh
+
+- name: install ufw
+  apt:
+    name: "ufw"
+
+- name: setup open ports
+  ufw: rule=allow port={{ item }}
+  with_items:
+    - 22
+    - 443
+    - 8443
+    - 8080
+
+- name: set default policy to deny and start firewall
+  ufw:
+    policy: "deny"
+    state: "enabled"
+
+- name: "Automated security updates"
+  apt: name=unattended-upgrades state=present
+
+- file: path=/etc/apt/apt.conf.d/10periodic state=absent
+
+- blockinfile:
+    dest: /etc/apt/apt.conf.d/10periodic
+    create: yes
+    block: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Download-Upgradeable-Packages "1";
+      APT::Periodic::AutocleanInterval "7";
+      APT::Periodic::Unattended-Upgrade "1";
+
+- name: "Fail2ban"
+  apt: name=fail2ban state=present
+
+- name: "Logwatch"
+  apt: name=logwatch state=present
+
+- cron: name="send logwatch logs" minute="0" hour="0" job="/usr/sbin/logwatch --output mail --mailto {{ reports_email }} --detail high" state=present
