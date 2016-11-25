@@ -42,16 +42,9 @@
 - name: "Automated security updates"
   apt: name=unattended-upgrades state=present
 
-- file: path=/etc/apt/apt.conf.d/10periodic state=absent
-
-- blockinfile:
+- template:
     dest: /etc/apt/apt.conf.d/10periodic
-    create: yes
-    block: |
-      APT::Periodic::Update-Package-Lists "1";
-      APT::Periodic::Download-Upgradeable-Packages "1";
-      APT::Periodic::AutocleanInterval "7";
-      APT::Periodic::Unattended-Upgrade "1";
+    src: 10periodic.j2
 
 - name: "Fail2ban"
   apt: name=fail2ban state=present
