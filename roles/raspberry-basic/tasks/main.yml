@@ -2,3 +2,4 @@
 - include_vars: overrides.yml
 - include: security.yml
 - include: unifi.yml
+- include: monitoring.yml
