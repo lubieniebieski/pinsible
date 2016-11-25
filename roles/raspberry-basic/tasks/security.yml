@@ -2,6 +2,14 @@
 - name: "First things first - install latest patches"
   apt: update_cache=yes upgrade=full
 
+- name: "Download Update RPi"
+  apt: name=rpi-update
+
+- name: "Update RPi"
+  command: "rpi-update"
+  changed_when: command_result.stdout.find('Your firmware is already up to date') == -1
+  notify: Reboot machine
+
 - name: "Add SSH users"
   user: name={{ item.user }} shell=/bin/bash groups=sudo,adm
   with_items:
