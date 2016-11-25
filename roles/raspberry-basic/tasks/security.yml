@@ -7,6 +7,7 @@
 
 - name: "Update RPi"
   command: "rpi-update"
+  register: command_result
   changed_when: command_result.stdout.find('Your firmware is already up to date') == -1
   notify: Reboot machine
 
