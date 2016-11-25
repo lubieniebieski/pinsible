@@ -1,0 +1,6 @@
+---
+- name: "htop"
+  apt: name=htop state=present
+
+- name: "vim"
+  apt: name=vim state=present
