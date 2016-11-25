@@ -18,6 +18,10 @@
   with_items:
     - "{{ ssh_users }}"
 
+- authorized_key: user=pi key="{{ lookup('file', \'files/keys/{{ item.name }}\')  }}"
+  with_items:
+    - "{{ ssh_users }}"
+
 - name: "Enforce ssh key logins"
   action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin without-password" state=present
   notify: Restart ssh
