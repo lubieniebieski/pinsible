@@ -1,3 +1,10 @@
 ---
 - name: Restart ssh
   service: name=ssh state=restarted
+
+- name: Reboot machine
+  shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+  async: 1
+  poll: 0
+  become: true
+  ignore_errors: true
