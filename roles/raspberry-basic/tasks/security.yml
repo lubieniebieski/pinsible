@@ -41,6 +41,7 @@
 
 - name: setup open ports
   ufw: rule=allow port={{ item }}
+  tags: firewall
   with_items:
     - 22
     - 443
@@ -50,6 +51,7 @@
     - 8883
 
 - name: set default policy to deny and start firewall
+  tags: firewall
   ufw:
     policy: "deny"
     state: "enabled"
