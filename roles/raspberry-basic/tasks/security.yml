@@ -47,6 +47,7 @@
     - 1880
     - 8443
     - 8080
+    - 8883
 
 - name: set default policy to deny and start firewall
   ufw:
