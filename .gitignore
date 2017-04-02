@@ -1,4 +1,4 @@
 roles/raspberry-basic/files/keys/*
 group_vars/raspberry
 hosts
-*.retry
+**/*.retry
