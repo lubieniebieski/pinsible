@@ -2,15 +2,6 @@
 - name: "First things first - install latest patches"
   apt: update_cache=yes upgrade=full
 
-- name: "Download Update RPi"
-  apt: name=rpi-update
-
-- name: "Update RPi"
-  command: "rpi-update"
-  register: command_result
-  changed_when: command_result.stdout.find('Your firmware is already up to date') == -1
-  notify: Reboot machine
-
 - name: "Add SSH users"
   user: name={{ item.user }} shell=/bin/bash groups=sudo,adm
   with_items:
@@ -22,14 +13,6 @@
     state: present
     regexp: '^%sudo'
     line: '%sudo ALL=(ALL) NOPASSWD: ALL'
-
-- authorized_key: user="{{ item.user }}" key="{{ lookup('file', \'files/keys/{{ item.name }}\')  }}"
-  with_items:
-    - "{{ ssh_users }}"
-
-- authorized_key: user=pi key="{{ lookup('file', \'files/keys/{{ item.name }}\')  }}"
-  with_items:
-    - "{{ ssh_users }}"
 
 - name: "Enforce ssh key logins"
   action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin without-password" state=present
@@ -43,12 +26,10 @@
   ufw: rule=allow port={{ item }}
   tags: firewall
   with_items:
-    - 22
-    - 443
-    - 1880
-    - 8443
-    - 8080
-    - 8883
+    - "22"
+    - "53" # pihole
+    - "80" # pihole
+    - "443"
 
 - name: set default policy to deny and start firewall
   tags: firewall

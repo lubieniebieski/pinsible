@@ -2,10 +2,14 @@
 
 I just wanted to make my RPi setup persistent and play a little bit with Ansible. Have fun!
 
-## TODO
+## Setup
 
-- [ ] Describe setup
-- [ ] Describe what's included
+Disclaimer: this setup is tested on Mac OS.
+
+1. Add your key to authorized keys on pi@ host. (or use `sshpass`)
+2. `brew install ansible`
+3. Create `hosts` file (take a look at `hosts.sample`)
+4. `ansible-playbook main.yml -i hosts`
 
 ## Contact
 
