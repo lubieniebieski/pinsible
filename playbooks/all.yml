@@ -2,6 +2,5 @@
   become: true
 
   roles:
-    - lubieniebieski.datadog-raspberry
     - lubieniebieski.unifi-controller
     - raspberry-basic
